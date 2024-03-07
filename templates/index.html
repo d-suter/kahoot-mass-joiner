@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta viewport="width=device-width, initial-scale=1.0">
+    <title>Kahoot Mass Joiner</title>
+    <style>
+        body {
+            background-color: #333;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 350px; /* Adjust width as needed */
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px; /* Increased bottom margin */
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            width: 100%;
+            border-radius: 20px; /* Rounded borders for input fields */
+            border: 1px solid #555; /* Darker border for better contrast */
+            background-color: #555;
+            color: #ddd;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #777;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2); /* Subtle glow effect */
+        }
+
+        input[type="submit"] {
+            padding: 15px 20px;
+            width: 100%;
+            font-size: 1rem;
+            border-radius: 20px; /* Rounded borders for the button */
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px; /* Space between text input and button */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+            transform: scale(1.05); /* Slight increase in size on hover */
+        }
+
+        #infoBox {
+            border: 1px solid #ccc;
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-radius: 20px; /* Rounded borders for the info box */
+            background: #222;
+            color: #fff;
+            font-family: monospace;
+            width: 100%;
+            display: block; /* Ensure it's a block element */
+            box-sizing: border-box; /* Include padding and border */
+            transition: background-color 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Kahoot Mass Joiner!</h1>
+        <p>Enter the game ID and the starting nickname below to start joining.</p>
+        <form id="joinForm" method="POST">
+            <input type="text" id="game_id" name="game_id" placeholder="🎮 Game ID" required><br>
+            <input type="text" id="nick_start" name="nick_start" placeholder="👤 Nickname Start" required><br>
+            <input type="submit" value="▶️ Join Game">
+            <div id="infoBox">ℹ️ Awaiting action...</div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("joinForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var game_id = document.getElementById("game_id").value;
+            var nick_start = document.getElementById("nick_start").value;
+            var infoBox = document.getElementById("infoBox");
+            
+            infoBox.textContent = "Running...";
+            
+            fetch('/join', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `game_id=${encodeURIComponent(game_id)}&nick_start=${encodeURIComponent(nick_start)}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                infoBox.innerHTML = "✅ Completed: " + data; // Changed textContent to innerHTML and added emoji
+            })
+            .catch(error => {
+                infoBox.innerHTML = "❌ An error occurred: " + error; // Changed textContent to innerHTML and added emoji
+            });
+        }); // Added missing closing parenthesis and semicolon here
+    </script>    
+</body>
+</html>
